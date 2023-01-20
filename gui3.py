@@ -35,9 +35,21 @@ def format_list(listIn):
     with open("blacklist.txt", "r") as blacklist_file:
         window_set = set(result)
         window_set.difference_update(blacklist_file)
-        blacklist = blacklist_file
 
     return window_set
+
+def apply_blacklist(setIn):
+    # Read the blacklist from the file
+    with open("blacklist.txt", "r") as file:
+        blacklist = file.read().splitlines()
+
+    # Compile the blacklist into a set of regular expressions
+    blacklist = {re.compile(item) for item in blacklist}
+
+    # Create a new set containing only items that don't match the blacklist
+    differenced_set = {x for x in setIn if not any(pattern.match(x) for pattern in blacklist)}
+
+    return differenced_set
 
 def produce_final_set():
     window_list_active = get_window_list()
@@ -45,18 +57,18 @@ def produce_final_set():
     window_set_active = set(lowercase_list_active)
     window_set_active = format_list(window_set_active)
     lowercase_set_active = {item.lower() for item in window_set_active}
-    lowercase_set_active.difference_update(blacklist)
+    
     lowercase_set_active.discard('')
-    lowercase_set_active.difference_update(blacklist)
 
     #remove more blacklisted items
     for p in patternlist:
         lowercase_set_active = {x for x in lowercase_set_active if not p.match(x)}
-    
-    return lowercase_set_active
+        
+    setOut = apply_blacklist(lowercase_set_active)
+    return setOut
 
-final_set=produce_final_set()
-print(final_set)
+final_window_set=produce_final_set()
+print(final_window_set)
 
 
 def button1_callback():
@@ -115,7 +127,7 @@ text_box.insert("1.0","lol2")
 clear_text(text_box)
 
 # Print out current windows 
-text_box.insert("1.0",final_set)
+text_box.insert("1.0",final_window_set)
 
 
 exec_list = list()
