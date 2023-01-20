@@ -1,22 +1,62 @@
 import tkinter as tk
+import ast
 from Xlib import X, display
 import subprocess
+import re
 
 
 d = display.Display()
 s = d.screen()
 xroot = s.root
-window_list = set()
+window_list = list()
 windows = xroot.query_tree().children
+blacklist = list()
+pattern1 = re.compile("^gsd.*"); pattern2 = re.compile("^xdg.*"); pattern3 = re.compile("^org.*"); pattern4 = re.compile("^evolution.*")
+pattern5 = re.compile("^gnome.*"); pattern6 = re.compile("^ibus.*")
+patternlist = (pattern1,pattern2,pattern3,pattern4,pattern5,pattern6)
 
-for window in windows:
-    if window.get_attributes().map_state == X.IsViewable:
-        text = window.get_wm_name() or window.get_wm_class()
-       # print(text)
-        window_list.add(text)
+def get_window_list():
+    for window in windows:
+            text =  window.get_wm_class()
+            # print(text)
+            window_list.append(text)
+    return window_list
 
-window_list.discard('None')    
-window_list.discard(None)    
+def format_list(listIn):
+    # use ast.literal_eval() to convert the string to a list of tuples
+    tuples_list = tuple(listIn)
+
+    # use list comprehension to extract the second element of each tuple
+    result = [x[0] for x in tuples_list if x is not None]
+
+    # use ','.join() to join the list of strings into one string
+    #result = ','.join(result)
+
+    with open("blacklist.txt", "r") as blacklist_file:
+        window_set = set(result)
+        window_set.difference_update(blacklist_file)
+        blacklist = blacklist_file
+
+    return window_set
+
+def produce_final_set():
+    window_list_active = get_window_list()
+    lowercase_list_active = [(x[0], x[1].lower()) if x is not None else None for x in window_list_active]
+    window_set_active = set(lowercase_list_active)
+    window_set_active = format_list(window_set_active)
+    lowercase_set_active = {item.lower() for item in window_set_active}
+    lowercase_set_active.difference_update(blacklist)
+    lowercase_set_active.discard('')
+    lowercase_set_active.difference_update(blacklist)
+
+    #remove more blacklisted items
+    for p in patternlist:
+        lowercase_set_active = {x for x in lowercase_set_active if not p.match(x)}
+    
+    return lowercase_set_active
+
+final_set=produce_final_set()
+print(final_set)
 
 
 def button1_callback():
@@ -75,25 +115,33 @@ text_box.insert("1.0","lol2")
 clear_text(text_box)
 
 # Print out current windows 
-text_box.insert("1.0",window_list)
+text_box.insert("1.0",final_set)
+
 
 exec_list = list()
 def get_exec_dir(nameIn):
     output = subprocess.check_output(["which", nameIn]).decode().strip()
     return output
+#exec_list.append(get_exec_dir("firefox"))
+#exec_list.append(get_exec_dir("kate"))
 
-
-exec_list.append(get_exec_dir("firefox"))
-exec_list.append(get_exec_dir("kate"))
-
-
-
-text_box.insert("1.0", exec_list)
+#text_box.insert("1.0", "placeholder!!!")
 
 # Place the text box below the buttons
 text_box.grid(row=1, column=0, columnspan=3, sticky="ew")
 
-print(window_list)
+def clean_window(window_name_in):
+    ref = ["wmctrl", "-r"]
+    command_list_fullscreen = ref.copy(); command_list_fullscreen.extend([window_name_in, "-b", "remove,fullscreen"])
+    command_list_vert = ref.copy(); command_list_vert.extend([window_name_in, "-b", "remove,maximized_vert"])
+    command_list_horz = ref.copy(); command_list_horz.extend([window_name_in, "-b", "remove,maximized_horz"])
+    command_list_size = ref.copy(); command_list_size.extend([window_name_in, "-e", "0,900,0,1280,720"])
+    command_list = [command_list_fullscreen, command_list_horz, command_list_vert,command_list_size]
+    
+    for command in command_list:
+        subprocess.run(command)
+    
+clean_window("super")
 
 # Run the main loop
 root.mainloop()
