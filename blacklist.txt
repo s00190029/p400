@@ -1,0 +1,9 @@
+navigator*
+none
+dropbox
+gnome*
+org*
+xdg*
+gsd*
+evolution*
+ibus*
