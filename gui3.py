@@ -1,8 +1,10 @@
 import tkinter as tk
+import platform
 import ast
 from Xlib import X, display
 import subprocess
 import re
+import linux_tools as linux
 
 
 d = display.Display()
@@ -12,7 +14,7 @@ window_list = list()
 windows = xroot.query_tree().children
 blacklist = list()
 pattern1 = re.compile("^gsd.*"); pattern2 = re.compile("^xdg.*"); pattern3 = re.compile("^org.*"); pattern4 = re.compile("^evolution.*")
-pattern5 = re.compile("^gnome.*"); pattern6 = re.compile("^ibus.*")
+pattern5 = re.compile("^lol.*"); pattern6 = re.compile("^ibus.*")
 patternlist = (pattern1,pattern2,pattern3,pattern4,pattern5,pattern6)
 
 def get_window_list():
@@ -61,9 +63,10 @@ def produce_final_set():
     lowercase_set_active.discard('')
 
     #remove more blacklisted items
+    """
     for p in patternlist:
         lowercase_set_active = {x for x in lowercase_set_active if not p.match(x)}
-        
+    """ 
     setOut = apply_blacklist(lowercase_set_active)
     return setOut
 
@@ -154,6 +157,9 @@ def clean_window(window_name_in):
         subprocess.run(command)
     
 clean_window("super")
+
+for item in final_window_set:
+    print(linux.linux_tools.get_executable_path(item))
 
 # Run the main loop
 root.mainloop()
