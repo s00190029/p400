@@ -3,6 +3,7 @@ import linux_tools
 import asyncio
 
 wmRef = ['wmctrl', '-r']
+
 class LinuxWindow:
     def __init__(self,name,x_coords,y_coords,x_size,y_size):
         self.name = name
@@ -14,7 +15,7 @@ class LinuxWindow:
 
 
     def move(self):
-        subprocess.run(['wmctrl', '-r', '-e', '0,0,0,500,500'])
+        subprocess.run(wmRef.copy().extend(['-e', '0,0,0,500,500']))
 
     async def execute(self):
         await subprocess.run(self.path)   
