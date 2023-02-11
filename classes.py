@@ -17,6 +17,7 @@ class LinuxWindow:
 
 
     def move(self):
+        # hardcoded values. Change to dynamic
         subprocess.run(wmRef.copy().extend(['-e', '0,0,0,500,500']))
 
     def execute(self):
