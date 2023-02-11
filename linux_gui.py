@@ -4,95 +4,89 @@ import platform
 import ast
 import re
 import linux_tools as linux
-from window_linux_class import LinuxWindow as lprocess
+from classes import LinuxStack
+from classes import LinuxWindow
+import gen_tools
 import subprocess
 
-
-final_window_set=linux.produce_final_set()
-print(final_window_set)
-
-
-def button1_callback():
-    # Placeholder method for button 1
-    print("Button 1 clicked")
-    kateProgram = lprocess("kate", 1, 2, 3, 4)
-    asyncio.run(kateProgram.execute())
+# Colour Variables
+bg_colour = "#2f3136"
+colour_white = "#ffffff"
+activebackground_colour = "#434c5e"
 
 
-def button2_callback():
-    linux.clean_window("kate")
-    print("Button 2 clicked")
+async def main() -> None:
+    
+    def button1_callback():
+        clear_text(text_box)        
+        print("Button 1 clicked")
+        global tempStack 
+        tempList = gen_tools.produce_final_list()
+        print("Templist is of type {}".format(type(tempList)))
+        tempStack = LinuxStack("tempStack",tempList)
+        text_box.insert("1.0", tempList[0].name)
+        
 
-def button3_callback():
-    # Placeholder method for button 3
-    print("Button 3 clicked")
+    def button2_callback():
+        print("Button 2 clicked")
+        tempStack.launch()
 
-# Create the main window
-root = tk.Tk()
-root.title("Launcher Tool")
+    def button3_callback():
+        clear_text(text_box)
+        final_window_set=linux.produce_final_set()
+        for item in final_window_set:
+            print(linux.get_executable_path(item))
 
-# Set the window size to 800x450 (16:9 aspect ratio)
-root.geometry("800x450")
+        print(final_window_set)
+        text_box.insert("1.0",final_window_set)
 
-# Set the background color to a dark color
-#root.configure(background="#36393f")
-root["bg"] = "#36393f"
+    # Create the main window
+    root = tk.Tk()
+    root.title("Launcher Tool")
 
-# Set the foreground (text) color to a light color
-#root.configure(foreground="#ffffff")
-root["bg"] = "black"
+    # Set the window size to 800x450 (16:9 aspect ratio)
+    root.geometry("1280x720")
 
+    # Set the background color to a dark color
+    #root.configure(background="#36393f")
+    root["bg"] = "#36393f"
 
-# Create the 3 buttons
-button1 = tk.Button(root, text="Button 1", command=lambda: asyncio.get_event_loop().run_in_executor(None,button1_callback), bg="#2f3136", fg="#ffffff", activebackground="#434c5e", activeforeground="#ffffff")
-button1.pack()
-button2 = tk.Button(root, text="Button 2", command=button2_callback, bg="#2f3136", fg="#ffffff", activebackground="#434c5e", activeforeground="#ffffff")
-button3 = tk.Button(root, text="Button 3", command=button3_callback, bg="#2f3136", fg="#ffffff", activebackground="#434c5e", activeforeground="#ffffff")
+    # Set the foreground (text) color to a light color
+    #root.configure(foreground=colour_white)
+    root["bg"] = "black"
 
-# Place the buttons in a horizontal layout using the grid layout manager
-button1.grid(row=0, column=0, sticky="ew")
-button2.grid(row=0, column=1, sticky="ew")
-button3.grid(row=0, column=2, sticky="ew")
+    # Create the 3 buttons
+    button1 = tk.Button(root, text="Capture", command=button1_callback, bg=bg_colour, fg=colour_white, activebackground=activebackground_colour, activeforeground=colour_white)
+    button2 = tk.Button(root, text="Launch", command=button2_callback, bg=bg_colour, fg=colour_white, activebackground=activebackground_colour, activeforeground=colour_white)
+    button3 = tk.Button(root, text="Button 3", command=button3_callback, bg=bg_colour, fg=colour_white, activebackground=activebackground_colour, activeforeground=colour_white)
 
-# Set the row and column weights to 1 to make the layout responsive to window resizing
-root.columnconfigure(0, weight=1)
-root.columnconfigure(1, weight=1)
-root.columnconfigure(2, weight=1)
+    # Place the buttons in a horizontal layout using the grid layout manager
+    button1.grid(row=0, column=0, sticky="ew")
+    button2.grid(row=0, column=1, sticky="ew")
+    button3.grid(row=0, column=2, sticky="ew")
 
-# Create the text box
-text_box = tk.Text(root, bg="#2f3136", fg="#ffffff", insertbackground="#ffffff", highlightbackground="#2f3136", highlightcolor="#ffffff", selectbackground="#2f3136", selectforeground="#ffffff")
+    # Set the row and column weights to 1 to make the layout responsive to window resizing
+    root.columnconfigure(0, weight=1)
+    root.columnconfigure(1, weight=1)
+    root.columnconfigure(2, weight=1)
+    #root.columnconfigure(3, weight=1)
 
-# Add placeholder text to the text box
-def clear_text(box_name):
-    box_name.delete("1.0", "end")
+    # Create the text box
+    text_box = tk.Text(root, bg=bg_colour, fg=colour_white, insertbackground=colour_white, highlightbackground=bg_colour, highlightcolor=colour_white, selectbackground=bg_colour, selectforeground=colour_white)
+    text_box.grid(row=1, column=0, columnspan=3, sticky="ew")
+    # Add placeholder text to the text box
+    def clear_text(box_name):
+        box_name.delete("1.0", "end")
 
-text_box.insert("1.0", "Placeholder text")
-text_box.insert("1.0","lol")
-text_box.insert("1.0","lol2")
-clear_text(text_box)
+    """
+    text_box.insert("1.0", "Placeholder text")
+    text_box.insert("1.0","lol")
+    text_box.insert("1.0","lol2")
+    clear_text(text_box)
+    """
 
-# Print out current windows 
-text_box.insert("1.0",final_window_set)
+    # Run the main loop
+    root.mainloop()
 
-
-exec_list = list()
-
-#exec_list.append(get_exec_dir("firefox"))
-#exec_list.append(get_exec_dir("kate"))
-
-#text_box.insert("1.0", "placeholder!!!")
-
-# Place the text box below the buttons
-text_box.grid(row=1, column=0, columnspan=3, sticky="ew")
-
-
-# Testing area
-
-for item in final_window_set:
-    print(linux.get_executable_path(item))
-
-
-
-# Run the main loop
-root.mainloop()
+asyncio.run(main())
 

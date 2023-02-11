@@ -18,7 +18,7 @@ class LinuxWindow:
         subprocess.run(wmRef.copy().extend(['-e', '0,0,0,500,500']))
 
     async def execute(self):
-        await subprocess.run(self.path)   
+        subprocess.run("{} &".format(self.path))   
 
     """
     import asyncio
