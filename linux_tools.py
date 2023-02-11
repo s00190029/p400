@@ -2,13 +2,15 @@ import subprocess
 from Xlib import X, display
 import subprocess
 import re
+
+
 d = display.Display()
 s = d.screen()
 xroot = s.root
 window_list = list()
 windows = xroot.query_tree().children
 blacklist = list()
-
+wmctrlRef = "wmctrl -r"
 
 
 def get_executable_path(processIn):
@@ -20,7 +22,6 @@ def get_executable_path(processIn):
 def get_window_list():
     for window in windows:
         text = window.get_wm_class()
-    # print(text)
         window_list.append(text)
     return window_list
 
@@ -71,7 +72,14 @@ def produce_final_set():
         lowercase_set_active = {x for x in lowercase_set_active if not p.match(x)}
     """ 
     setOut = apply_blacklist(lowercase_set_active)
+    
     return setOut
+
+def produce_final_list():
+    internalSet = produce_final_set()
+    pList = []
+    for item in internalSet:
+        pList.append(Var(item,0,0,0,0))
 
 def clean_window(window_name_in):
     ref = ["wmctrl", "-r"]
@@ -87,3 +95,58 @@ def clean_window(window_name_in):
 def get_exec_dir(nameIn):
     output = subprocess.check_output(["which", nameIn]).decode().strip()
     return output
+
+
+
+sleepLine = "sleep 2 && \n"
+
+def create_script(linuxWindowsIn):
+
+    initialScriptName = "initial_script.sh"
+
+    f = open(initialScriptName, "w")
+    f.write("#!/bin/sh \n")
+
+    for p in linuxWindowsIn:
+        f.write(p.path + " & \n")
+    f.write(sleepLine) # CONTINUE FROM HERE
+    f.close()
+    scriptWindowLines(linuxWindowsIn,initialScriptName)
+    
+
+#create_script()
+
+def scriptWindowLines(windowListIn,scriptFileIn):
+    f = open(scriptFileIn, "a")
+    lineList = []
+
+    for window in windowListIn:
+        lineList.append("{} {} {} {} &&\n".format("wmctrl -r",window.name, "-e", window.stringCoords))
+
+    f.writelines(lineList)
+
+
+def addAnd(fileIn):
+    f = open(fileIn, "a")
+
+
+def addNewLine(fileIn):
+    f = open(fileIn, "a")
+    f.write("\n")
+
+
+
+#addNewLine("initial_script.sh")
+
+
+
+
+
+
+"""f = open("demofile2.txt", "a")
+f.write("Now the file has more content!")
+f.close()
+
+#open and read the file after the appending:
+f = open("demofile2.txt", "r")
+print(f.read()) """
