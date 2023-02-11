@@ -24,7 +24,8 @@ async def main() -> None:
         tempList = gen_tools.produce_final_list()
         print("Templist is of type {}".format(type(tempList)))
         tempStack = LinuxStack("tempStack",tempList)
-        text_box.insert("1.0", tempList[0].name)
+        for n in tempList:
+            text_box.insert("1.0"," {}, ".format(n.name))
         
 
     def button2_callback():
