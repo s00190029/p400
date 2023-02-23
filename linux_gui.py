@@ -14,29 +14,29 @@ bg_colour = "#2f3136"
 colour_white = "#ffffff"
 activebackground_colour = "#434c5e"
 
-
 async def main() -> None:
     
     def button1_callback():
         clear_text(text_box)        
         print("Button 1 clicked")
-        global tempStack 
-        tempList = gen_tools.produce_final_list()
+        global tempStack
+        tempList = gen_tools.produceFinalProcessList()
         print("Templist is of type {}".format(type(tempList)))
         tempStack = LinuxStack("tempStack",tempList)
         for n in tempList:
             text_box.insert("1.0"," {}, ".format(n.name))
+        #f = open("testFile.txt", "w")
+        #f.write(tempStack)
         
-
     def button2_callback():
         print("Button 2 clicked")
         tempStack.launch()
 
     def button3_callback():
         clear_text(text_box)
-        final_window_set=linux.produce_final_set()
+        final_window_set=linux.produceCurrentWindowSet()
         for item in final_window_set:
-            print(linux.get_executable_path(item))
+            print(linux.getExecutablePath(item))
 
         print(final_window_set)
         text_box.insert("1.0",final_window_set)
@@ -45,15 +45,10 @@ async def main() -> None:
     root = tk.Tk()
     root.title("Launcher Tool")
 
-    # Set the window size to 800x450 (16:9 aspect ratio)
+    # Set the window size (16:9 aspect ratio)
     root.geometry("1280x720")
 
     # Set the background color to a dark color
-    #root.configure(background="#36393f")
-    root["bg"] = "#36393f"
-
-    # Set the foreground (text) color to a light color
-    #root.configure(foreground=colour_white)
     root["bg"] = "black"
 
     # Create the 3 buttons
@@ -70,24 +65,14 @@ async def main() -> None:
     root.columnconfigure(0, weight=1)
     root.columnconfigure(1, weight=1)
     root.columnconfigure(2, weight=1)
-    #root.columnconfigure(3, weight=1)
 
     # Create the text box
     text_box = tk.Text(root, bg=bg_colour, fg=colour_white, insertbackground=colour_white, highlightbackground=bg_colour, highlightcolor=colour_white, selectbackground=bg_colour, selectforeground=colour_white)
     text_box.grid(row=1, column=0, columnspan=3, sticky="ew")
-    # Add placeholder text to the text box
     def clear_text(box_name):
         box_name.delete("1.0", "end")
-
-    """
-    text_box.insert("1.0", "Placeholder text")
-    text_box.insert("1.0","lol")
-    text_box.insert("1.0","lol2")
-    clear_text(text_box)
-    """
 
     # Run the main loop
     root.mainloop()
 
 asyncio.run(main())
-

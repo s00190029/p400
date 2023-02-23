@@ -12,7 +12,7 @@ class LinuxWindow:
         self.y_coord = y_coord
         self.x_size = x_size
         self.y_size = y_size
-        self.path = linux_tools.get_exec_dir(name)
+        self.path = linux_tools.getExecDir(name)
         self.stringCoords = "'0,{},{},{},{}'".format(str(self.x_coord),str(self.y_coord),str(self.x_size),str(self.y_size))
 
 
@@ -23,6 +23,10 @@ class LinuxWindow:
     def execute(self):
         subprocess.Popen(self.path) 
 
+    def executeSafe(self):
+        if linux_tools.isProcessRunning(self.name) == False:
+            subprocess.Popen(self.path) 
+
 class LinuxStack:
     def __init__(self,name, process_list = []):
         self.name = name
@@ -30,4 +34,6 @@ class LinuxStack:
 
     def launch(self):
         for p in self.process_list:
-            p.execute()
+                p.executeSafe()
+            
+    
