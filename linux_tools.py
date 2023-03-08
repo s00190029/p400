@@ -2,6 +2,7 @@ import subprocess
 from Xlib import X, display
 import subprocess
 import re
+import json
 
 """
 d = display.Display()
@@ -111,7 +112,10 @@ def cleanWindow(window_name_in):
 
 
 def getExecDir(nameIn):
-    output = subprocess.check_output(["which", nameIn]).decode().strip()
+    try:
+        output = subprocess.check_output(["which", nameIn]).decode().strip()
+    except:
+        output = None
     return output
 
 
@@ -196,6 +200,19 @@ def isProcessRunning(processName):
     if processName in processSet:
         return True
     return False
+
+def getFullPathFromPs(psIn):
+    text = subprocess.run("ps {}".format(psIn), capture_output=True, shell=True)
+    pattern = re.compile(r"/[^ ]*")
+    match = pattern.search(str(text))
+    if match:
+        directory = match.group(0)
+        return directory
+    return None
+
+def writeStackToJson(stackIn):
+    with open(("{}.json".format(stackIn.name)), 'w') as f:
+        json.dump(stackIn.to_json(), f, indent=4)
 
 
 """ Fulfill this method later
