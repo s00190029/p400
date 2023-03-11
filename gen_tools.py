@@ -2,11 +2,11 @@ import linux_tools
 from classes import LinuxWindow
 
 
-def produce_final_list():
-    internalSet = linux_tools.produce_final_set()
+def produceFinalProcessList():
+    internalSet = linux_tools.produceCurrentWindowSet()
     pList = []
+
     for item in internalSet:
-        print(item)
-        print(type(item))
-        pList.append(LinuxWindow(item,0,0,0,0))
+        coords = linux_tools.getCoordsViaName(item)
+        pList.append(LinuxWindow(item,coords[1],coords[2],coords[3],coords[4]))
     return pList

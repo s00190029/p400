@@ -7,3 +7,5 @@ xdg*
 gsd*
 evolution*
 ibus*
+steam_app*
+guake
