@@ -1,0 +1,77 @@
+{
+    "name": "tempStack3",
+    "process_list": [
+        {
+            "name": "baobab",
+            "x_coord": 0,
+            "y_coord": 0,
+            "x_size": 1280,
+            "y_size": 720,
+            "path": "/usr/bin/baobab",
+            "stringCoords": "'0,0,0,1280,720'"
+        },
+        {
+            "name": "discord-screenaudio",
+            "x_coord": 900,
+            "y_coord": 74,
+            "x_size": 2560,
+            "y_size": 1403,
+            "path": "/usr/bin/discord-screenaudio",
+            "stringCoords": "'0,900,74,2560,1403'"
+        },
+        {
+            "name": "joplin",
+            "x_coord": 900,
+            "y_coord": 74,
+            "x_size": 2560,
+            "y_size": 1403,
+            "path": "/var/lib/snapd/snap/bin/joplin",
+            "stringCoords": "'0,900,74,2560,1403'"
+        },
+        {
+            "name": "signal-desktop",
+            "x_coord": 0,
+            "y_coord": 0,
+            "x_size": 1280,
+            "y_size": 720,
+            "path": "/usr/bin/signal-desktop",
+            "stringCoords": "'0,0,0,1280,720'"
+        },
+        {
+            "name": "superproductivity",
+            "x_coord": 0,
+            "y_coord": 0,
+            "x_size": 1280,
+            "y_size": 720,
+            "path": "/usr/bin/superproductivity",
+            "stringCoords": "'0,0,0,1280,720'"
+        },
+        {
+            "name": "firefox",
+            "x_coord": 1800,
+            "y_coord": 0,
+            "x_size": 2560,
+            "y_size": 1440,
+            "path": "/usr/bin/firefox",
+            "stringCoords": "'0,1800,0,2560,1440'"
+        },
+        {
+            "name": "krunner",
+            "x_coord": 0,
+            "y_coord": 0,
+            "x_size": 1280,
+            "y_size": 720,
+            "path": "/usr/bin/krunner",
+            "stringCoords": "'0,0,0,1280,720'"
+        },
+        {
+            "name": "code",
+            "x_coord": 900,
+            "y_coord": 74,
+            "x_size": 2560,
+            "y_size": 1403,
+            "path": "/usr/bin/code",
+            "stringCoords": "'0,900,74,2560,1403'"
+        }
+    ]
+}

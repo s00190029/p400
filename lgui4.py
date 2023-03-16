@@ -16,43 +16,43 @@ bg_colour = "#2f3136"
 colour_white = "#ffffff"
 activebackground_colour = "#434c5e"
 
+
 async def main() -> None:
 
-    # Other Variables
-    buttonCounter = 1
-
     def button1_callback():
-        nonlocal buttonCounter
         # Clear text box so it doesn't get cluttered
-        clear_text(text_box)        
-        print("Button 1 clicked")
+        clear_text(text_box)
 
         # Setup a temporary process stack class and fill it with the currently running processes
         global tempStack
         tempList = gen_tools.produceFinalProcessList()
-        tempStackName = "tempStack{}".format(str(buttonCounter))
-        tempStack = LinuxStack(tempStackName,tempList)
+        tempStack = LinuxStack("tempStack", tempList)
+
         # Write into the texbox to show user the process list
         for n in tempList:
-            text_box.insert("1.0"," {}, ".format(n.name))
+            text_box.insert("1.0", " {}, ".format(n.name))
+
         # Save the temp stack to disk for later
         linux.writeStackToJson(tempStack)
+
         # Update stack buttons
         populateStackButtons()
-        buttonCounter += 1
-        
+
     def button2_callback():
         print("Button 2 clicked")
         tempStack.launch()
 
     def button3_callback():
         clear_text(text_box)
-        final_window_set=linux.produceCurrentWindowSet()
+        final_window_set = linux.produceCurrentWindowSet()
         for item in final_window_set:
             print(linux.getExecutablePath(item))
 
         print(final_window_set)
-        text_box.insert("1.0",final_window_set)
+        text_box.insert("1.0", final_window_set)
+
+    def clear_text(box_name):
+        box_name.delete("1.0", "end")
 
     # Create the main window
     root = tk.Tk()
@@ -65,9 +65,12 @@ async def main() -> None:
     root["bg"] = "black"
 
     # Create the 3 buttons
-    button1 = tk.Button(root, text="Capture", command=button1_callback, bg=bg_colour, fg=colour_white, activebackground=activebackground_colour, activeforeground=colour_white)
-    button2 = tk.Button(root, text="Launch", command=button2_callback, bg=bg_colour, fg=colour_white, activebackground=activebackground_colour, activeforeground=colour_white)
-    button3 = tk.Button(root, text="Button 3", command=button3_callback, bg=bg_colour, fg=colour_white, activebackground=activebackground_colour, activeforeground=colour_white)
+    button1 = tk.Button(root, text="Capture", command=button1_callback, bg=bg_colour,
+                        fg=colour_white, activebackground=activebackground_colour, activeforeground=colour_white)
+    button2 = tk.Button(root, text="Launch", command=button2_callback, bg=bg_colour,
+                        fg=colour_white, activebackground=activebackground_colour, activeforeground=colour_white)
+    button3 = tk.Button(root, text="Button 3", command=button3_callback, bg=bg_colour,
+                        fg=colour_white, activebackground=activebackground_colour, activeforeground=colour_white)
 
     # Place the buttons in a horizontal layout using the grid layout manager
     button1.grid(row=0, column=0, sticky="ew")
@@ -80,34 +83,40 @@ async def main() -> None:
     root.columnconfigure(2, weight=1)
 
     # Create the text box
-    text_box = tk.Text(root, bg=bg_colour, fg=colour_white, insertbackground=colour_white, highlightbackground=bg_colour, highlightcolor=colour_white, selectbackground=bg_colour, selectforeground=colour_white)
+    text_box = tk.Text(root, bg=bg_colour, fg=colour_white, insertbackground=colour_white, highlightbackground=bg_colour,
+                       highlightcolor=colour_white, selectbackground=bg_colour, selectforeground=colour_white)
     text_box.grid(row=1, column=0, columnspan=3, sticky="ew")
-    def clear_text(box_name):
-        box_name.delete("1.0", "end")
 
 
-
-    # Dynamic Buttons
     def create_button(json_file):
         with open(json_file, "r") as f:
             data = json.load(f)
             tempStack = LinuxStack.from_json(data)
             button_text = os.path.splitext(json_file)[0]
-            button = tk.Button(root, text=button_text, bg=bg_colour, fg=colour_white, activebackground=activebackground_colour, activeforeground=colour_white, command=lambda: tempStack.launch())
+            button = tk.Button(root, text=button_text, bg=bg_colour, fg=colour_white,
+                               activebackground=activebackground_colour, activeforeground=colour_white, command=lambda: tempStack.launch())
             return button
 
     def populateStackButtons():
+
         # Get the list of JSON files in the current directory
         # Will need to update later for a dedicated json folder both here and in class
         json_files = [f for f in os.listdir(".") if f.endswith(".json")]
         buttons = []
-
+        
         # Create a button for each JSON file
+        colNum = 0
         for i, json_file in enumerate(json_files):
             button = create_button(json_file)
-            button.grid(row=2, column=i, sticky="ew")
+            rowAddition = linux.calcGUIRows(buttons)
+            button.grid(row=2+rowAddition, column=colNum, sticky="ew")
+            colNum += 1
+            if colNum >= 3:
+                colNum = 0
             buttons.append(button)
-    # End Dynamic Buttons
+        buttons.sort
+
+    populateStackButtons()
 
     # Run the main loop
     root.mainloop()

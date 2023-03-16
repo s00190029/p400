@@ -1,4 +1,5 @@
 import subprocess
+import os
 from Xlib import X, display
 import subprocess
 import re
@@ -154,7 +155,7 @@ def addNewLine(fileIn):
 
 
 def extractNumericalCoordsFromLine(line):
-    if line == None: 
+    if line == None:
         return None
     pattern = r'^0x[0-9a-fA-F]+ +(\d) +(\d+) +(\d+) +(\d+) +(\d+).*'
     match = re.match(pattern, line)
@@ -192,8 +193,9 @@ def getCoordsViaName(nameIn):
     lineInQuestion = getLineForProcess(windowLines, nameIn)
     coords = extractNumericalCoordsFromLine(lineInQuestion)
     if coords == None:
-        coords = [0,0,0,1280,720]
+        coords = [0, 0, 0, 1280, 720]
     return coords
+
 
 def isProcessRunning(processName):
     processSet = produceCurrentWindowSet()
@@ -201,8 +203,10 @@ def isProcessRunning(processName):
         return True
     return False
 
+
 def getFullPathFromPs(psIn):
-    text = subprocess.run("ps {}".format(psIn), capture_output=True, shell=True)
+    text = subprocess.run("ps {}".format(
+        psIn), capture_output=True, shell=True)
     pattern = re.compile(r"/[^ ]*")
     match = pattern.search(str(text))
     if match:
@@ -210,9 +214,24 @@ def getFullPathFromPs(psIn):
         return directory
     return None
 
+
+def getJsonCount():
+    cwd = os.getcwd()
+    jsonCount = 0
+    for file in os.listdir(cwd):
+        if file.endswith('.json'):
+            jsonCount += 1
+    return int(jsonCount)
+
+
 def writeStackToJson(stackIn):
-    with open(("{}.json".format(stackIn.name)), 'w') as f:
+    writeName = "{}_{}".format(stackIn.name, getJsonCount())
+    with open(("{}.json".format(writeName)), 'w') as f:
         json.dump(stackIn.to_json(), f, indent=4)
+
+
+def calcGUIRows(buttonsIn):
+    return len(buttonsIn)//3
 
 
 """ Fulfill this method later

@@ -9,3 +9,4 @@ evolution*
 ibus*
 steam_app*
 guake
+krunner
