@@ -115,6 +115,7 @@ def cleanWindow(window_name_in):
 def getExecDir(nameIn):
     try:
         output = subprocess.check_output(["which", nameIn]).decode().strip()
+        #output = os.get_exec_path(nameIn)
     except:
         output = None
     return output

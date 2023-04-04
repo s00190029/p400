@@ -30,7 +30,7 @@ async def main() -> None:
 
         # Write into the texbox to show user the process list
         for n in tempList:
-            text_box.insert("1.0", " {}, ".format(n.name))
+            text_box.insert("1.0", " {}{}, ".format(n.name, n.stringCoords))
 
         # Save the temp stack to disk for later
         linux.writeStackToJson(tempStack)
