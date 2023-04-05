@@ -17,7 +17,7 @@ colour_white = "#ffffff"
 activebackground_colour = "#434c5e"
 
 
-async def main() -> None:
+async def lgui() -> None:
 
     def button1_callback():
         # Clear text box so it doesn't get cluttered
@@ -121,4 +121,4 @@ async def main() -> None:
     # Run the main loop
     root.mainloop()
 
-asyncio.run(main())
+asyncio.run(lgui())
