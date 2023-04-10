@@ -108,4 +108,4 @@ async def wgui() -> None:
     # Run the main loop
     root.mainloop()
 
-asyncio.run(wgui())
+

@@ -121,4 +121,3 @@ async def lgui() -> None:
     # Run the main loop
     root.mainloop()
 
-asyncio.run(lgui())
