@@ -12,7 +12,7 @@ cos_first_letter =  current_os[0].lower()
 
 match cos_first_letter:
     case "w":
-        asyncio.run(wgui())
+        asyncio.run(wgui.wgui())
     case "l":
         asyncio.run(lgui4.lgui())
     case 'm':
