@@ -1,0 +1,14 @@
+import subprocess
+
+class MicrosoftWindow:
+    def __init__(self, name, x_coord, y_coord, x_size, y_size, pathIn):
+        self.name = name
+        self.x_coord = x_coord
+        self.y_coord = y_coord
+        self.x_size = x_size
+        self.y_size = y_size
+        self.path = pathIn
+
+    def Execute(self) -> None:
+        subprocess.Popen(self.path) 
+
