@@ -6,6 +6,7 @@ import re
 import subprocess
 import os
 import json
+import windows_tools
 
 # Colour Variables
 bg_colour = "#2f3136"
@@ -20,9 +21,17 @@ async def wgui() -> None:
         clear_text(text_box)
 
         # Setup a temporary process stack class and fill it with the currently running processes
+        global tempStack
+        tempStack = windows_tools.getCurrentMicrosoftStack()
+        print(type(tempStack))
         
 
         # Write into the texbox to show user the process list
+        """for twindow in tempStack:
+            text_box.insert("1.0", " {}{}, ".format(twindow.name))"""
+        for twindow in tempStack.windowList:
+            text_box.insert("1.0", " {} {}, ".format(twindow.name,twindow.path))
+        #text_box.insert("1.0", tempStack.windowList)
         
 
         # Save the temp stack to disk for later

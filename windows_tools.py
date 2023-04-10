@@ -63,5 +63,6 @@ def get_open_windows():
 
 def getCurrentMicrosoftStack():
     currentStack = MicrosoftWindowStack("tempStack", get_open_windows())
+    return currentStack
 
 
