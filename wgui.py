@@ -7,6 +7,8 @@ import subprocess
 import os
 import json
 import windows_tools
+import globalTools
+import mcwstack
 
 # Colour Variables
 bg_colour = "#2f3136"
@@ -29,13 +31,13 @@ async def wgui() -> None:
         # Write into the texbox to show user the process list
         """for twindow in tempStack:
             text_box.insert("1.0", " {}{}, ".format(twindow.name))"""
-        for twindow in tempStack.windowList:
+        for twindow in tempStack.window_list:
             text_box.insert("1.0", " {} {}, ".format(twindow.name,twindow.path))
         #text_box.insert("1.0", tempStack.windowList)
         
 
         # Save the temp stack to disk for later
-        
+        globalTools.writeStackToJson(tempStack)
 
         # Update stack buttons
         populateStackButtons()
@@ -87,7 +89,7 @@ async def wgui() -> None:
     def create_button(json_file):
         with open(json_file, "r") as f:
             data = json.load(f)
-            #tempStack = LinuxStack.from_json(data)
+            tempStack = mcwstack.MicrosoftWindowStack.from_json(data)
             button_text = os.path.splitext(json_file)[0]
             button = tk.Button(root, text=button_text, bg=bg_colour, fg=colour_white,
                                activebackground=activebackground_colour, activeforeground=colour_white, command=lambda: tempStack.launch())
