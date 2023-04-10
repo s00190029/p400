@@ -10,6 +10,7 @@ import gen_tools
 import subprocess
 import os
 import json
+import globalTools
 
 # Colour Variables
 bg_colour = "#2f3136"
@@ -33,7 +34,7 @@ async def lgui() -> None:
             text_box.insert("1.0", " {}{}, ".format(n.name, n.stringCoords))
 
         # Save the temp stack to disk for later
-        linux.writeStackToJson(tempStack)
+        globalTools.writeStackToJson(tempStack)
 
         # Update stack buttons
         populateStackButtons()
