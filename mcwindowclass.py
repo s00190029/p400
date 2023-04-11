@@ -22,6 +22,8 @@ class MicrosoftWindow:
     def execute_safe(self):
         if not gw.getWindowsWithTitle(self.name):
             subprocess.Popen(self.path)
+        if gw.getWindowsWithTitle(self.name):
+            self.move()
 
     def to_json(self):
         return {
