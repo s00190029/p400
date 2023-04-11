@@ -3,14 +3,12 @@ import asyncio
 import platform
 import ast
 import re
-import linux_tools as linux
-from classes import LinuxStack
-from classes import LinuxWindow
-import gen_tools
 import subprocess
 import os
 import json
+import windows_tools
 import globalTools
+import mcwstack
 
 # Colour Variables
 bg_colour = "#2f3136"
@@ -18,7 +16,7 @@ colour_white = "#ffffff"
 activebackground_colour = "#434c5e"
 
 
-async def lgui() -> None:
+async def wgui() -> None:
 
     def button1_callback():
         # Clear text box so it doesn't get cluttered
@@ -26,12 +24,17 @@ async def lgui() -> None:
 
         # Setup a temporary process stack class and fill it with the currently running processes
         global tempStack
-        tempList = gen_tools.produceFinalProcessList()
-        tempStack = LinuxStack("tempStack", tempList)
+        tempStack = windows_tools.getCurrentMicrosoftStack()
+        print(type(tempStack))
+        
 
         # Write into the texbox to show user the process list
-        for n in tempList:
-            text_box.insert("1.0", " {}{}, ".format(n.name, n.stringCoords))
+        """for twindow in tempStack:
+            text_box.insert("1.0", " {}{}, ".format(twindow.name))"""
+        for twindow in tempStack.window_list:
+            text_box.insert("1.0", " {} {}, ".format(twindow.name,twindow.path))
+        #text_box.insert("1.0", tempStack.windowList)
+        
 
         # Save the temp stack to disk for later
         globalTools.writeStackToJson(tempStack)
@@ -41,16 +44,10 @@ async def lgui() -> None:
 
     def button2_callback():
         print("Button 2 clicked")
-        tempStack.launch()
 
     def button3_callback():
         clear_text(text_box)
-        final_window_set = linux.produceCurrentWindowSet()
-        for item in final_window_set:
-            print(linux.getExecutablePath(item))
-
-        print(final_window_set)
-        text_box.insert("1.0", final_window_set)
+        text_box.insert("1.0","test insert")
 
     def clear_text(box_name):
         box_name.delete("1.0", "end")
@@ -92,7 +89,7 @@ async def lgui() -> None:
     def create_button(json_file):
         with open(json_file, "r") as f:
             data = json.load(f)
-            tempStack = LinuxStack.from_json(data)
+            tempStack = mcwstack.MicrosoftWindowStack.from_json(data)
             button_text = os.path.splitext(json_file)[0]
             button = tk.Button(root, text=button_text, bg=bg_colour, fg=colour_white,
                                activebackground=activebackground_colour, activeforeground=colour_white, command=lambda: tempStack.launch())
@@ -109,8 +106,8 @@ async def lgui() -> None:
         colNum = 0
         for i, json_file in enumerate(json_files):
             button = create_button(json_file)
-            rowAddition = linux.calcGUIRows(buttons)
-            button.grid(row=2+rowAddition, column=colNum, sticky="ew")
+            #rowAddition = linux.calcGUIRows(buttons)
+            button.grid(row=2+0, column=colNum, sticky="ew")
             colNum += 1
             if colNum >= 3:
                 colNum = 0
@@ -121,4 +118,5 @@ async def lgui() -> None:
 
     # Run the main loop
     root.mainloop()
+
 

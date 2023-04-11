@@ -4,7 +4,7 @@ from Xlib import X, display
 import subprocess
 import re
 import json
-
+import globalTools
 """
 d = display.Display()
 s = d.screen()
@@ -215,7 +215,7 @@ def getFullPathFromPs(psIn):
         return directory
     return None
 
-
+"""
 def getJsonCount():
     cwd = os.getcwd()
     jsonCount = 0
@@ -223,13 +223,14 @@ def getJsonCount():
         if file.endswith('.json'):
             jsonCount += 1
     return int(jsonCount)
+"""
 
-
+"""
 def writeStackToJson(stackIn):
-    writeName = "{}_{}".format(stackIn.name, getJsonCount())
+    writeName = "{}_{}".format(stackIn.name, globalTools.getJsonCount())
     with open(("{}.json".format(writeName)), 'w') as f:
         json.dump(stackIn.to_json(), f, indent=4)
-
+"""
 
 def calcGUIRows(buttonsIn):
     return len(buttonsIn)//3
