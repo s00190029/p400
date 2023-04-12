@@ -9,7 +9,7 @@ def getJsonCount():
             jsonCount += 1
     return int(jsonCount)
 
-def writeStackToJson(stackIn):
+def writeStackToJson(stackIn, filename):
     writeName = "{}_{}".format(stackIn.name, getJsonCount())
-    with open(("{}.json".format(writeName)), 'w') as f:
+    with open(filename, "w") as f:
         json.dump(stackIn.to_json(), f, indent=4)
